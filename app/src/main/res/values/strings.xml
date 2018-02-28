@@ -1,16 +1,44 @@
 <resources>
-    <string name="app_name">2FA</string>
+    <string name="app_name">Двуфакторная авторизация</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="prompt_pin">Введите ПИН-код</string>
+    <string name="prompt_fingerprint">Или сосканируйте отпечаток пальца</string>
+    <string name="action_sign_in">Войти</string>
+    <string name="action_sign_up">Зарегистрировать приложение</string>
+    <string name="error_invalid_pin">ПИН неверен</string>
+    <string name="error_help_fingerprint">Отпечаток не считался</string>
+    <string name="error_failed_fingerprint">Не тот палец</string>
+    <string name="error_error_fingerprint">Не тот палец. Попробуйте авторизоваться через некоторое время или с помощью PIN кода</string>
+
+    <!-- Strings related to main -->
+    <string name="action_verify">Подтвердить</string>
+    <string name="action_reject">"Это не я"</string>
+    <string name="main_default_title">"Что это такое?"</string>
+    <string name="main_default_description">"Двухфакторная аутентификация — это дополнительный уровень безопасности, который гарантирует, что доступ к вашей учетной записи сможете получить только вы, даже если пароль известен кому-либо еще.\n\nПосле выполнения входа код подтверждения больше не будет запрашиваться на этом устройстве, пока не будет полностью выполнен выход, не будут стерты все данные на устройстве или пока не потребуется сменить код из соображений безопасности."</string>
+    <string name="title_activity_register">Зарегистрировать устройство</string>
+
+    <!-- Strings related to register -->
+    <string name="prompt_phone">Введите Ваш телефон</string>
+    <string name="enter_pin">Введите PIN код, состоящий из 4-х цифр</string>
+    <string name="error_pin">PIN не корректньй</string>
+    <string name="action_send_code">Подтвердить телефон</string>
+    <string name="action_register">Зарегистрироваться</string>
+    <string name="enter_code">Введите код подтверждения, которьй пришел вам с помощью СМС</string>
+    <string name="error_invalid_code">Код неверен</string>
+    <string name="error_incorrect_password">Регистрация успешна. Не забьвайте свой PIN код</string>
+    <string name="error_field_required">Данное поле обязательно для заполнения</string>
+    <string name="permission_rationale">"Доступ к СМС и отпечаткам пальцев необходим для безопасной авторизации и регистрации устройства."</string>
+
+    <!-- Strings related to pin view -->
+    <string name="key_1">1</string>
+    <string name="key_2">2</string>
+    <string name="key_3">3</string>
+    <string name="key_4">4</string>
+    <string name="key_5">5</string>
+    <string name="key_6">6</string>
+    <string name="key_7">7</string>
+    <string name="key_8">8</string>
+    <string name="key_9">9</string>
+    <string name="key_0">0</string>
 </resources>

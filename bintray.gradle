@@ -1,0 +1,97 @@
+//#################################### Bintray ####################################//
+if (project.rootProject.file('local.properties').exists()) {
+    apply plugin: 'com.jfrog.bintray'
+
+    version = "1.2.1"     // This is the library version used when deploying the artifact
+
+    def siteUrl = 'https://github.com/kevalpatel2106/PasscodeView'
+    // Homepage URL of the library
+    def gitUrl = 'https://github.com/kevalpatel2106/PasscodeView.git'      // Git repository URL
+
+    group = "com.kevalpatel2106"    //Group id
+
+    install {
+
+        repositories.mavenInstaller {
+            pom {
+                project {
+                    packaging 'aar' //AAR format
+
+                    // Add your description here
+                    name 'PasscodeView'  //Name of the repo
+                    description = 'PasscodeView is an Android Library to easily and securely authenticate user with PIN code or using the fingerprint scanner.'
+                    url siteUrl
+
+                    // Set your license
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'kevalpatel2106'     //Dev id
+                            name 'Keval Patel'      //Dev name
+                            email 'kevalpatel2106@gmail.com'    //Dev email
+                        }
+                    }
+                    scm {
+                        connection gitUrl
+                        developerConnection gitUrl
+                        url siteUrl
+                    }
+                }
+            }
+        }
+    }
+
+    task sourcesJar(type: Jar) {
+        from android.sourceSets.main.java.srcDirs
+        classifier = 'sources'
+    }
+
+    task javadoc(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        failOnError false
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+    artifacts {
+        archives javadocJar
+        archives sourcesJar
+    }
+
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+    // https://github.com/bintray/gradle-bintray-plugin
+    bintray {
+        user = properties.getProperty("bintray.user")
+        key = properties.getProperty("bintray.apikey")
+
+        configurations = ['archives']
+
+        pkg {
+            repo = "maven"
+
+            // it is the name that appears in bintray when logged
+            name = "PasscodeView"    //Name of the artifact [Group Id]:[name]:[version]
+            websiteUrl = siteUrl
+            vcsUrl = gitUrl
+            licenses = ["Apache-2.0"]
+            publish = true
+            version {
+                gpg {
+                    sign = false
+                    //Determines whether to GPG sign the files. The default is false
+                    //passphrase = properties.getProperty("bintray.gpg.password")   //Optional. The passphrase for GPG signing'
+                }
+            }
+        }
+    }
+}
