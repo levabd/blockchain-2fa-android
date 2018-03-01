@@ -125,6 +125,8 @@ public final class PinView extends PasscodeView implements InteractiveArrayList.
                     a.getString(R.styleable.PinView_pin_titleText) : BoxTitleIndicator.DEF_TITLE_TEXT);
             mBoxIndicator.setTitleColor(a.getColor(R.styleable.PinView_pin_titleTextColor,
                     mContext.getResources().getColor(R.color.lib_key_default_color)));
+            mBoxIndicator.setTitleSize(a.getDimension(R.styleable.PinView_pin_titleTextSize,
+                    mContext.getResources().getDimension(R.dimen.lib_title_text_size)));
         } finally {
             a.recycle();
         }

@@ -20,6 +20,7 @@
         <!--Title text-->
         <attr name="pin_titleText" format="string"/>
         <attr name="pin_titleTextColor" format="color"/>
+        <attr name="pin_titleTextSize" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="PasscodeView">
@@ -30,6 +31,11 @@
         <attr name="fingerprintDefaultText" format="string" />
         <attr name="fingerprintTextColor" format="color" />
         <attr name="fingerprintTextSize" format="dimension" />
+
+        <attr name="fingerprintFailed" format="string" />
+        <attr name="fingerprintHelp" format="string" />
+        <attr name="fingerprintError" format="string" />
+        <attr name="fingerprintSuccess" format="string" />
 
         <!--Horizontal divider-->
         <attr name="dividerColor" format="color"/>

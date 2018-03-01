@@ -122,6 +122,15 @@ public abstract class PasscodeView extends View {
                 //noinspection ConstantConditions
                 mBoxFingerprint.setStatusText(a.hasValue(R.styleable.PasscodeView_fingerprintDefaultText) ?
                         a.getString(R.styleable.PasscodeView_fingerprintDefaultText) : BoxFingerprint.DEF_FINGERPRINT_STATUS);
+                mBoxFingerprint.setHelpStatusText(a.hasValue(R.styleable.PasscodeView_fingerprintHelp) ?
+                        a.getString(R.styleable.PasscodeView_fingerprintHelp) : BoxFingerprint.DEF_FINGERPRINT_HELP_STATUS);
+                mBoxFingerprint.setFailedStatusText(a.hasValue(R.styleable.PasscodeView_fingerprintFailed) ?
+                        a.getString(R.styleable.PasscodeView_fingerprintFailed) : BoxFingerprint.DEF_FINGERPRINT_FAILED_STATUS);
+                mBoxFingerprint.setErrorStatusText(a.hasValue(R.styleable.PasscodeView_fingerprintError) ?
+                        a.getString(R.styleable.PasscodeView_fingerprintError) : BoxFingerprint.DEF_FINGERPRINT_ERROR_STATUS);
+                mBoxFingerprint.setSuccessStatusText(a.hasValue(R.styleable.PasscodeView_fingerprintSuccess) ?
+                        a.getString(R.styleable.PasscodeView_fingerprintSuccess) : BoxFingerprint.DEF_FINGERPRINT_SUCCESS_STATUS);
+
                 mBoxFingerprint.setStatusTextColor(a.getColor(R.styleable.PasscodeView_fingerprintTextColor,
                         mContext.getResources().getColor(R.color.lib_key_default_color)));
                 mBoxFingerprint.setStatusTextSize(a.getDimension(R.styleable.PasscodeView_fingerprintTextSize,

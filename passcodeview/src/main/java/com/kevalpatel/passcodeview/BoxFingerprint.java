@@ -43,6 +43,10 @@ import com.kevalpatel.passcodeview.interfaces.AuthenticationListener;
 
 final class BoxFingerprint extends Box implements FingerPrintAuthHelper.FingerPrintAuthCallback {
     static final String DEF_FINGERPRINT_STATUS = "Scan your finger to authenticate";
+    static final String DEF_FINGERPRINT_SUCCESS_STATUS = "Fingerprint recognized";
+    static final String DEF_FINGERPRINT_ERROR_STATUS = "Unrecoverable error has been encountered";
+    static final String DEF_FINGERPRINT_FAILED_STATUS = "Wrong finger";
+    static final String DEF_FINGERPRINT_HELP_STATUS = "Can't recognize finger";
 
     private Boolean isFingerPrintBoxVisible;
     private Rect mBounds = new Rect();
@@ -55,6 +59,10 @@ final class BoxFingerprint extends Box implements FingerPrintAuthHelper.FingerPr
     @Dimension
     private float mStatusTextSize;
     private String mNormalStatusText;
+    private String mSuccessStatusText;
+    private String mHelpStatusText;
+    private String mFailedStatusText;
+    private String mErrorStatusText;
 
     private String mCurrentStatusText;
 
@@ -86,7 +94,10 @@ final class BoxFingerprint extends Box implements FingerPrintAuthHelper.FingerPr
     void setDefaults() {
         mStatusTextSize = getContext().getResources().getDimension(R.dimen.lib_fingerprint_status_text_size);
         mNormalStatusText = DEF_FINGERPRINT_STATUS;
-        mCurrentStatusText = mNormalStatusText;
+        mHelpStatusText = DEF_FINGERPRINT_HELP_STATUS;
+        mFailedStatusText = DEF_FINGERPRINT_FAILED_STATUS;
+        mErrorStatusText = DEF_FINGERPRINT_ERROR_STATUS;
+        mSuccessStatusText = DEF_FINGERPRINT_SUCCESS_STATUS;
         mStatusTextColor = getContext().getResources().getColor(R.color.lib_key_default_color);
     }
 
@@ -141,7 +152,8 @@ final class BoxFingerprint extends Box implements FingerPrintAuthHelper.FingerPr
 
     @Override
     public void onFingerprintAuthSuccess(FingerprintManager.CryptoObject cryptoObject) {
-        mCurrentStatusText = "Fingerprint recognized";
+        mStatusTextPaint.setColor(Color.GREEN);
+        mCurrentStatusText = mSuccessStatusText;
         getRootView().invalidate();
 
         new android.os.Handler().postDelayed(new Runnable() {
@@ -158,10 +170,18 @@ final class BoxFingerprint extends Box implements FingerPrintAuthHelper.FingerPr
     public void onFingerprintAuthFailed(int errorCode, String errorMessage) {
         switch (errorCode) {
             case FingerPrintAuthHelper.CANNOT_RECOGNIZE_ERROR:
+                mStatusTextPaint.setColor(Color.RED);
+                mCurrentStatusText = mFailedStatusText;
+                playErrorAnimation();
+                break;
             case FingerPrintAuthHelper.NON_RECOVERABLE_ERROR:
+                mStatusTextPaint.setColor(Color.RED);
+                mCurrentStatusText = mErrorStatusText;
+                playErrorAnimation();
+                break;
             case FingerPrintAuthHelper.RECOVERABLE_ERROR:
                 mStatusTextPaint.setColor(Color.RED);
-                mCurrentStatusText = errorMessage;
+                mCurrentStatusText = mHelpStatusText;
                 playErrorAnimation();
                 break;
         }
@@ -224,6 +244,34 @@ final class BoxFingerprint extends Box implements FingerPrintAuthHelper.FingerPr
         this.mNormalStatusText = statusText;
         mCurrentStatusText = mNormalStatusText;
     }
+
+    @NonNull
+    String getHelpStatusText() {
+        return mHelpStatusText;
+    }
+
+    void setHelpStatusText(@NonNull String helpStatusText) { this.mHelpStatusText = helpStatusText; }
+
+    @NonNull
+    String getFailedStatusText() {
+        return mFailedStatusText;
+    }
+
+    void setFailedStatusText(@NonNull String failedStatusText) { this.mFailedStatusText = failedStatusText; }
+
+    @NonNull
+    String getErrorStatusText() {
+        return mErrorStatusText;
+    }
+
+    void setErrorStatusText(@NonNull String errorStatusText) { this.mErrorStatusText = errorStatusText; }
+
+    @NonNull
+    String getSuccessStatusText() {
+        return mSuccessStatusText;
+    }
+
+    void setSuccessStatusText(@NonNull String successStatusText) { this.mSuccessStatusText = successStatusText; }
 
     int getStatusTextColor() {
         return mStatusTextColor;

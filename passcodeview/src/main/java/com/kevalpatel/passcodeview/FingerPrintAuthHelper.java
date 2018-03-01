@@ -277,7 +277,7 @@ final class FingerPrintAuthHelper {
 
                         @Override
                         public void onAuthenticationFailed() {
-                            mCallback.onFingerprintAuthFailed(CANNOT_RECOGNIZE_ERROR, "Cannot recognize the fingerprint.");
+                            mCallback.onFingerprintAuthFailed(CANNOT_RECOGNIZE_ERROR, "Wrong Finger");
                         }
 
                         @Override

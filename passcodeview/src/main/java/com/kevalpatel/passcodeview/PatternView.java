@@ -128,6 +128,8 @@ public final class PatternView extends PasscodeView {
                     a.getString(R.styleable.PatternView_titleText) : BoxTitleIndicator.DEF_TITLE_TEXT);
             mBoxTitle.setTitleColor(a.getColor(R.styleable.PatternView_titleTextColor,
                     mContext.getResources().getColor(R.color.lib_key_default_color)));
+            mBoxTitle.setTitleSize(a.getDimension(R.styleable.PinView_pin_titleTextSize,
+                    mContext.getResources().getDimension(R.dimen.lib_title_text_size)));
 
             mBoxPattern.setNoOfRows(a.getInt(R.styleable.PatternView_noOfRows, Constants.DEF_PATTERN_LENGTH));
             mBoxPattern.setNoOfColumn(a.getInt(R.styleable.PatternView_noOfColumns, Constants.DEF_PATTERN_LENGTH));

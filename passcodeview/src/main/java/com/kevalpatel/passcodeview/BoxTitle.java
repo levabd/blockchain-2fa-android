@@ -16,10 +16,12 @@
 
 package com.kevalpatel.passcodeview;
 
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.ColorInt;
+import android.support.annotation.Dimension;
 import android.support.annotation.NonNull;
 
 /**
@@ -35,7 +37,9 @@ final class BoxTitle extends Box {
 
     @ColorInt
     private int mTitleColor;                        //Title text color
-    private String mTitle;                          //Title color
+    @Dimension
+    private float mTitleSize;                       //Title text size
+    private String mTitle;                          //Title text
     private Paint mTitlePaint;                      //Solid indicator color
 
     private Rect mBounds;
@@ -49,6 +53,7 @@ final class BoxTitle extends Box {
     void setDefaults() {
         mTitle = DEF_TITLE_TEXT;
         mTitleColor = getContext().getResources().getColor(R.color.lib_key_default_color);
+        mTitleSize = getContext().getResources().getDimension(R.dimen.lib_title_text_size);
     }
 
     @Override
@@ -105,7 +110,7 @@ final class BoxTitle extends Box {
         mTitlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mTitlePaint.setColor(mTitleColor);
         mTitlePaint.setTextAlign(Paint.Align.CENTER);
-        mTitlePaint.setTextSize(getContext().getResources().getDimension(R.dimen.lib_title_text_size));
+        mTitlePaint.setTextSize(mTitleSize);
     }
 
     String getTitle() {
@@ -114,6 +119,15 @@ final class BoxTitle extends Box {
 
     void setTitle(String title) {
         this.mTitle = title;
+    }
+
+    float getTitleSize() {
+        return mTitleSize;
+    }
+
+    void setTitleSize(float titleSize) {
+        this.mTitleSize = titleSize;
+        preparePaint();
     }
 
     int getTitleColor() {
