@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@android:color/background_light"
     android:paddingBottom="10dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
@@ -17,12 +16,30 @@
         android:id="@+id/pattern_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:dividerColor="@color/colorPrimaryDark"
-        app:fingerprintDefaultText="Scan your finger to unlock application"
+        android:layout_above="@+id/signUpButton"
+        app:dividerColor="@color/colorPrimaryDarkest"
+        app:fingerprintDefaultText="@string/prompt_fingerprint"
         app:fingerprintEnable="true"
-        app:fingerprintTextColor="@color/colorAccent"
+        app:fingerprintError="@string/fingerprint_error"
+        app:fingerprintFailed="@string/fingerprint_failed"
+        app:fingerprintHelp="@string/fingerprint_help"
+        app:fingerprintSuccess="@string/fingerprint_success"
+        app:fingerprintTextColor="@color/colorPrimaryDarkest"
         app:fingerprintTextSize="@dimen/finger_print_text_size"
         app:giveTactileFeedback="true"
-        app:titleTextColor="@android:color/white"/>
+        app:pin_titleText="@string/prompt_pin"
+        app:pin_titleTextColor="@color/colorPrimaryDarkest"
+        app:pin_titleTextSize="@dimen/pin_title_text_size"
+        app:titleTextColor="@color/colorPrimaryDarkest" />
+
+    <Button
+        android:id="@+id/signUpButton"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:gravity="bottom|center_horizontal|center"
+        android:text="@string/action_sign_up" />
 
 </RelativeLayout>

@@ -17,13 +17,13 @@
         android:id="@+id/pattern_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:dividerColor="@color/colorPrimaryDark"
+        app:dividerColor="@color/colorPrimaryDarkest"
         app:fingerprintDefaultText="Scan your finger to unlock application"
         app:fingerprintEnable="true"
-        app:fingerprintTextColor="@color/colorAccent"
+        app:fingerprintTextColor="@color/colorPrimaryDarkest"
         app:fingerprintTextSize="@dimen/finger_print_text_size"
         app:giveTactileFeedback="true"
-        app:patternLineColor="@color/colorAccent"
-        app:titleTextColor="@android:color/white"/>
+        app:patternLineColor="@color/colorPrimaryDarkest"
+        app:titleTextColor="@color/colorPrimaryDarkest" />
 
 </RelativeLayout>

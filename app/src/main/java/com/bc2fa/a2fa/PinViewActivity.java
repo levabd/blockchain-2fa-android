@@ -3,6 +3,8 @@ package com.bc2fa.a2fa;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 
 import com.kevalpatel.passcodeview.KeyNamesBuilder;
 import com.kevalpatel.passcodeview.PinView;
@@ -20,7 +22,14 @@ public class PinViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pinview);
 
-        mPinView = (PinView) findViewById(R.id.pattern_view);
+        mPinView = findViewById(R.id.pattern_view);
+        Button mRegisterButton = findViewById(R.id.signUpButton);
+        mRegisterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(PinViewActivity.this, RegisterActivity.class));
+            }
+        });
 
         //Set the correct pin code.
         //REQUIRED
@@ -30,9 +39,9 @@ public class PinViewActivity extends AppCompatActivity {
         //REQUIRED
         mPinView.setKey(new RoundKey.Builder(mPinView)
                 .setKeyPadding(R.dimen.key_padding)
-                .setKeyStrokeColorResource(R.color.colorAccent)
+                .setKeyStrokeColorResource(R.color.colorPrimaryDarkest)
                 .setKeyStrokeWidth(R.dimen.key_stroke_width)
-                .setKeyTextColorResource(R.color.colorAccent)
+                .setKeyTextColorResource(R.color.colorPrimaryDarkest)
                 .setKeyTextSize(R.dimen.key_text_size)
                 .build());
 
@@ -40,8 +49,8 @@ public class PinViewActivity extends AppCompatActivity {
         //REQUIRED
         mPinView.setIndicator(new CircleIndicator.Builder(mPinView)
                 .setIndicatorRadius(R.dimen.indicator_radius)
-                .setIndicatorFilledColorResource(R.color.colorAccent)
-                .setIndicatorStrokeColorResource(R.color.colorAccent)
+                .setIndicatorFilledColorResource(R.color.colorPrimaryDarkest)
+                .setIndicatorStrokeColorResource(R.color.colorPrimaryDarkest)
                 .setIndicatorStrokeWidth(R.dimen.indicator_stroke_width)
                 .build());
 
@@ -64,8 +73,7 @@ public class PinViewActivity extends AppCompatActivity {
             public void onAuthenticationSuccessful() {
                 //User authenticated successfully.
                 //Navigate to secure screens.
-                startActivity(new Intent(PinViewActivity.this, AuthenticatedActivity.class));
-                finish();
+                startActivity(new Intent(PinViewActivity.this, MainActivity.class));
             }
 
             @Override
