@@ -74,6 +74,7 @@ public class PinViewActivity extends AppCompatActivity {
                 //User authenticated successfully.
                 //Navigate to secure screens.
                 startActivity(new Intent(PinViewActivity.this, MainActivity.class));
+                // finish();
             }
 
             @Override

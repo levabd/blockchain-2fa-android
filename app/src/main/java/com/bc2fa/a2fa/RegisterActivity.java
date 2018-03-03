@@ -4,13 +4,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -93,6 +94,12 @@ public class RegisterActivity extends AppCompatActivity {
     // Successfully registered
     private void attemptStart() {
         String code = mCodeView.getText().toString();
+        if (mShowResendTask != null) {
+            mShowResendTask.cancel(true);
+        }
+        if (mSendCodeTask != null) {
+            mSendCodeTask.cancel(true);
+        }
         showFullProgress(true);
         mRegisterTask = new RegisterTask(phone, pin, code);
         mRegisterTask.execute((Void) null);
@@ -234,6 +241,28 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    private void showModal(String message) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        // alert.setTitle("Modal");
+        alert.setMessage(message);
+
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Nothing to fire
+            }
+        });
+
+        alert.show();
+    }
+
+    private void registerSuccess() {
+        Context context = getApplicationContext();
+        Toast toast = Toast.makeText(this, getString(R.string.register_success), Toast.LENGTH_LONG);
+        toast.show();
+        startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+        finish();
+    }
+
     /**
      * Represents an asynchronous send code task used to register the user.
      */
@@ -269,9 +298,7 @@ public class RegisterActivity extends AppCompatActivity {
                 showCodeProgress(false, true);
             } else {
                 showCodeProgress(false, false);
-                Context context = getApplicationContext();
-                Toast toast = Toast.makeText(context, getString(R.string.error_internet_sms), Toast.LENGTH_LONG);
-                toast.show();
+                showModal(getString(R.string.error_internet_sms));
             }
         }
 
@@ -314,18 +341,13 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mRegisterTask = null;
-            Context context = getApplicationContext();
 
             if (success) {
                 showFullProgress(false);
-                Toast toast = Toast.makeText(context, getString(R.string.register_success), Toast.LENGTH_LONG);
-                toast.show();
+                registerSuccess();
             } else {
                 showFullProgress(false);
-                Toast toast = Toast.makeText(context, getString(R.string.enter_internet_register), Toast.LENGTH_LONG);
-                toast.show();
-                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-                finish();
+                showModal(getString(R.string.error_internet_register));
             }
         }
 

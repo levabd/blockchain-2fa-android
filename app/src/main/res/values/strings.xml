@@ -19,6 +19,17 @@
     <string name="main_default_title">"Что это такое?"</string>
     <string name="main_default_description">"Двухфакторная аутентификация — это дополнительный уровень безопасности, который гарантирует, что доступ к вашей учетной записи сможете получить только вы, даже если пароль известен кому-либо еще.\n\nПосле выполнения входа код подтверждения больше не будет запрашиваться на этом устройстве, пока не будет полностью выполнен выход, не будут стерты все данные на устройстве или пока не потребуется сменить код из соображений безопасности."</string>
 
+    <string name="title_verified">Подтверждено</string>
+    <string name="title_rejected">Отклоненоено</string>
+    <string name="request_title_format">%s запрашивает разрешение</string>
+    <string name="request_description_format">Сервис «%s» запрашивает разрешение на событие «%s».</string>
+    <string name="success_verified">Запрос успешно верифицирован</string>
+    <string name="success_rejected">Запрос успешно отклонен</string>
+    <string name="no_new_request">Новых запросов не найдено</string>
+
+    <string name="error_request">Ошибка обновления</string>
+    <string name="error_verified">Что-то пошло не так. Не удалось отправить ответ.</string>
+
     <!-- Strings related to register -->
     <string name="title_activity_register">Зарегистрировать устройство</string>
     <string name="prompt_phone">Ваш телефон</string>
@@ -41,7 +52,7 @@
     <string name="error_field_required">Данное поле обязательно для заполнения</string>
 
     <string name="error_internet_sms">Не удалось отправить SMS код. Попробуйте снова чуть позже.</string>
-    <string name="enter_internet_register">Не удалось зарегистрировать телефон. Попробуйте снова чуть позже.</string>
+    <string name="error_internet_register">Не удалось зарегистрировать телефон. Попробуйте снова чуть позже.</string>
 
     <string name="permission_fingerprint_rationale">"Доступ к отпечаткам пальцев необходим для безопасной авторизации и регистрации устройства."</string>
     <string name="permission_push_rationale">"Доступ к приему PUSH сообщений необходим для второго фактора авторизации."</string>

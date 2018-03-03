@@ -24,12 +24,20 @@
         </activity>
         <activity
             android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"
-            android:configChanges="orientation"/>
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_main" />
         <activity
             android:name=".RegisterActivity"
             android:screenOrientation="portrait"
-            android:configChanges="orientation"/>
+            android:configChanges="orientation"
+            android:label="@string/title_activity_register"
+            android:parentActivityName=".PinViewActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PinViewActivity" />
+        </activity>
     </application>
 
 </manifest>
