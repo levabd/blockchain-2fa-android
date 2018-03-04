@@ -2,11 +2,14 @@ package com.bc2fa.a2fa;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
@@ -19,8 +22,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.github.gfx.util.encrypt.EncryptedSharedPreferences;
+import com.github.gfx.util.encrypt.Encryption;
+
+/**
+ * Created by Oleg Levitsky
+ */
 
 public class RegisterActivity extends AppCompatActivity {
+
+    SharedPreferences mPrefs;
 
     private SendCodeTask mSendCodeTask = null;
     private ShowResendTask mShowResendTask = null;
@@ -46,11 +57,23 @@ public class RegisterActivity extends AppCompatActivity {
     private String pin;
     private String phone;
 
+    @SuppressLint("Assert")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        setupActionBar();
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        Bundle b = getIntent().getExtras();
+        int restore = -1; // or other values
+        if(b != null)
+            restore = b.getInt("restore");
+
+        if (restore > 0) { // Restore PIN, not register
+            this.setTitle(getString(R.string.title_activity_restore));
+        }
 
         // Set up the form form.
         mPinView = findViewById(R.id.pinEdit);
@@ -89,9 +112,13 @@ public class RegisterActivity extends AppCompatActivity {
         mRegisterFormView = findViewById(R.id.register_form);
         mCodeProgressView = findViewById(R.id.code_progress);
         mRegisterProgressView = findViewById(R.id.register_progress);
+
+        // Application preference
+        mPrefs = new EncryptedSharedPreferences(Encryption.getDefaultCipher(), this);
     }
 
     // Successfully registered
+    @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     private void attemptStart() {
         String code = mCodeView.getText().toString();
         if (mShowResendTask != null) {
@@ -105,17 +132,7 @@ public class RegisterActivity extends AppCompatActivity {
         mRegisterTask.execute((Void) null);
     }
 
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void setupActionBar() {
-        // Sdk is always >= 23(HONEYCOMB)
-        // Show the Up button in the action bar.
-        //noinspection ConstantConditions
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
+    @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     private void attemptSendCode(boolean resend) {
         // Reset errors.
         mPinView.setError(null);
@@ -168,7 +185,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean isPhoneValid(String phone) {
-        return phone.matches("^[+]?[0-9]{10,13}$");
+        return phone.matches("^[+]?[0-9]{10,14}$");
     }
 
     /**
@@ -255,8 +272,11 @@ public class RegisterActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private void registerSuccess() {
-        Context context = getApplicationContext();
+    private void registerSuccess(String phone2Save, String pin2Save) {
+        mPrefs.edit()
+                .putString("phone", phone2Save)
+                .putString("pin", pin2Save)
+                .apply();
         Toast toast = Toast.makeText(this, getString(R.string.register_success), Toast.LENGTH_LONG);
         toast.show();
         startActivity(new Intent(RegisterActivity.this, MainActivity.class));
@@ -344,7 +364,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (success) {
                 showFullProgress(false);
-                registerSuccess();
+                registerSuccess(mPhone, mPin);
             } else {
                 showFullProgress(false);
                 showModal(getString(R.string.error_internet_register));

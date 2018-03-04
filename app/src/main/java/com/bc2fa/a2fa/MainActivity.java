@@ -4,8 +4,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +19,18 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.github.gfx.util.encrypt.EncryptedSharedPreferences;
+import com.github.gfx.util.encrypt.Encryption;
+
 import java.util.HashMap;
 
+/**
+ * Created by Oleg Levitsky
+ */
+
 public class MainActivity extends AppCompatActivity {
+
+    SharedPreferences mPrefs;
 
     private RefreshTask mRefreshTask = null;
     private VerifyTask mVerifyTask = null;
@@ -34,12 +46,16 @@ public class MainActivity extends AppCompatActivity {
     HashMap<String, String> services;
     HashMap<String, String> events;
 
+    @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         loadEventsAndServices();
+
+        // Application preference
+        mPrefs = new EncryptedSharedPreferences(Encryption.getDefaultCipher(), this);
 
         Toolbar topToolBar = findViewById(R.id.toolbar);
         setSupportActionBar(topToolBar);

@@ -1,19 +1,28 @@
 package com.bc2fa.a2fa;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.github.gfx.util.encrypt.EncryptedSharedPreferences;
+import com.github.gfx.util.encrypt.Encryption;
 import com.kevalpatel.passcodeview.KeyNamesBuilder;
 import com.kevalpatel.passcodeview.PinView;
 import com.kevalpatel.passcodeview.indicators.CircleIndicator;
 import com.kevalpatel.passcodeview.interfaces.AuthenticationListener;
 import com.kevalpatel.passcodeview.keys.RoundKey;
 
+/**
+ * Created by Oleg Levitsky
+ */
+
 public class PinViewActivity extends AppCompatActivity {
     private static final String ARG_CURRENT_PIN = "current_pin";
+
+    SharedPreferences mPrefs;
 
     private PinView mPinView;
 
@@ -27,13 +36,13 @@ public class PinViewActivity extends AppCompatActivity {
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(PinViewActivity.this, RegisterActivity.class));
+                Intent intent = new Intent(PinViewActivity.this, RegisterActivity.class);
+                Bundle b = new Bundle();
+                b.putInt("restore", 1); //Your id
+                intent.putExtras(b); //Put your id to your next Intent
+                startActivity(intent);
             }
         });
-
-        //Set the correct pin code.
-        //REQUIRED
-        mPinView.setCorrectPin(new int[]{1, 2, 3, 4});
 
         //Build the desired key shape and pass the theme parameters.
         //REQUIRED
@@ -84,6 +93,26 @@ public class PinViewActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        // Application preference
+        super.onResume();
+        mPrefs = new EncryptedSharedPreferences(Encryption.getDefaultCipher(), this);
+
+        //Set the correct pin code.
+        //REQUIRED
+        String pin = mPrefs.getString("pin", "-1");
+        if (Integer.parseInt(pin) < 0) {
+            mPinView.setCorrectPin(new int[]{1, 2, 3, 4});
+        } else {
+            mPinView.setCorrectPin(new int[]{
+                    Character.getNumericValue(pin.charAt(0)),
+                    Character.getNumericValue(pin.charAt(1)),
+                    Character.getNumericValue(pin.charAt(2)),
+                    Character.getNumericValue(pin.charAt(3))});
+        }
     }
 
     @Override
