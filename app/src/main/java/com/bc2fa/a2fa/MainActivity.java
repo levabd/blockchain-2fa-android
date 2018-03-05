@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
         loadEventsAndServices();
 
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
         // Application preference
         mPrefs = new EncryptedSharedPreferences(Encryption.getDefaultCipher(), this);
 
@@ -198,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 setAnimatedHide(false, shortAnimTime, mRejectButton);
                 setAnimatedHide(false, shortAnimTime, mVerifyButton);
 
-                showModal(getString(R.string.no_new_request));
+                // showModal(getString(R.string.no_new_request));
             } else {
                 showFullProgress(false);
                 showModal(getString(R.string.error_request));

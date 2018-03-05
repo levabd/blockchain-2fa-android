@@ -25,6 +25,8 @@ import android.widget.Toast;
 import com.github.gfx.util.encrypt.EncryptedSharedPreferences;
 import com.github.gfx.util.encrypt.Encryption;
 
+import java.util.Objects;
+
 /**
  * Created by Oleg Levitsky
  */
@@ -66,14 +68,12 @@ public class RegisterActivity extends AppCompatActivity {
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
         Bundle b = getIntent().getExtras();
         int restore = -1; // or other values
         if(b != null)
             restore = b.getInt("restore");
-
-        if (restore > 0) { // Restore PIN, not register
-            this.setTitle(getString(R.string.title_activity_restore));
-        }
 
         // Set up the form form.
         mPinView = findViewById(R.id.pinEdit);
@@ -84,6 +84,13 @@ public class RegisterActivity extends AppCompatActivity {
         mCodeView = findViewById(R.id.codeEdit);
         mCodeDescriptionView = findViewById(R.id.code_description_text);
         mResendDescription = findViewById(R.id.didntReceiveCode);
+
+        if (restore > 0) { // Restore PIN, not register
+            this.setTitle(getString(R.string.title_activity_restore));
+            mPinView.setHint(R.string.restore_pin_small);
+        } else {
+            mPinView.setHint(R.string.enter_pin_small);
+        }
 
         mSendCodeButton = findViewById(R.id.send_code_button);
         mSendCodeButton.setOnClickListener(new OnClickListener() {
@@ -115,6 +122,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Application preference
         mPrefs = new EncryptedSharedPreferences(Encryption.getDefaultCipher(), this);
+
+        String phone = mPrefs.getString("phone", "-1");
+        if (!Objects.equals(phone, "-1")) {
+            mPhoneView.setText(phone);
+        }
     }
 
     // Successfully registered

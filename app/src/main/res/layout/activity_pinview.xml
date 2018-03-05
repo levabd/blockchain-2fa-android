@@ -12,34 +12,83 @@
     android:paddingTop="10dp"
     tools:context="com.bc2fa.a2fa.PinViewActivity">
 
-    <com.kevalpatel.passcodeview.PinView
-        android:id="@+id/pattern_view"
+    <RelativeLayout
+        android:id="@+id/pinEnter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/signUpButton"
-        app:dividerColor="@color/colorPrimaryDarkest"
-        app:fingerprintDefaultText="@string/prompt_fingerprint"
-        app:fingerprintEnable="true"
-        app:fingerprintError="@string/fingerprint_error"
-        app:fingerprintFailed="@string/fingerprint_failed"
-        app:fingerprintHelp="@string/fingerprint_help"
-        app:fingerprintSuccess="@string/fingerprint_success"
-        app:fingerprintTextColor="@color/colorPrimaryDarkest"
-        app:fingerprintTextSize="@dimen/finger_print_text_size"
-        app:giveTactileFeedback="true"
-        app:pin_titleText="@string/prompt_pin"
-        app:pin_titleTextColor="@color/colorPrimaryDarkest"
-        app:pin_titleTextSize="@dimen/pin_title_text_size"
-        app:titleTextColor="@color/colorPrimaryDarkest" />
+        android:background="@android:color/background_light"
+        android:paddingBottom="10dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="10dp"
+        android:visibility="visible"
+        tools:context="com.bc2fa.a2fa.PinViewActivity">
 
-    <Button
-        android:id="@+id/signUpButton"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        <com.kevalpatel.passcodeview.PinView
+            android:id="@+id/pattern_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/restoreButton"
+            app:dividerColor="@color/colorPrimaryDarkest"
+            app:fingerprintDefaultText="@string/prompt_fingerprint"
+            app:fingerprintEnable="true"
+            app:fingerprintError="@string/fingerprint_error"
+            app:fingerprintFailed="@string/fingerprint_failed"
+            app:fingerprintHelp="@string/fingerprint_help"
+            app:fingerprintSuccess="@string/fingerprint_success"
+            app:fingerprintTextColor="@color/colorPrimaryDarkest"
+            app:fingerprintTextSize="@dimen/finger_print_text_size"
+            app:giveTactileFeedback="true"
+            app:pin_titleText="@string/prompt_pin"
+            app:pin_titleTextColor="@color/colorPrimaryDarkest"
+            app:pin_titleTextSize="@dimen/pin_title_text_size"
+            app:titleTextColor="@color/colorPrimaryDarkest" />
+
+        <Button
+            android:id="@+id/restoreButton"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:gravity="bottom|center_horizontal|center"
+            android:text="@string/action_restore" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/welcome"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:gravity="bottom|center_horizontal|center"
-        android:text="@string/action_sign_up" />
+        android:layout_height="match_parent"
+        android:background="@android:color/background_light"
+        android:gravity="center_vertical|center_horizontal"
+        android:paddingBottom="10dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="10dp"
+        android:visibility="gone"
+        tools:context="com.bc2fa.a2fa.PinViewActivity">
+
+        <TextView
+            android:id="@+id/applicationDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/app_description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+        <Button
+            android:id="@+id/signUpButton"
+            style="@android:style/Widget.Material.Light.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/applicationDescription"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/action_sign_up" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

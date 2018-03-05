@@ -32,14 +32,23 @@ public class PinViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pinview);
 
         mPinView = findViewById(R.id.pattern_view);
-        Button mRegisterButton = findViewById(R.id.signUpButton);
-        mRegisterButton.setOnClickListener(new View.OnClickListener() {
+        Button mRestoreButton = findViewById(R.id.restoreButton);
+        mRestoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PinViewActivity.this, RegisterActivity.class);
                 Bundle b = new Bundle();
                 b.putInt("restore", 1); //Your id
                 intent.putExtras(b); //Put your id to your next Intent
+                startActivity(intent);
+            }
+        });
+
+        Button mRegisterButton = findViewById(R.id.signUpButton);
+        mRegisterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PinViewActivity.this, RegisterActivity.class);
                 startActivity(intent);
             }
         });
@@ -105,8 +114,12 @@ public class PinViewActivity extends AppCompatActivity {
         //REQUIRED
         String pin = mPrefs.getString("pin", "-1");
         if (Integer.parseInt(pin) < 0) {
-            mPinView.setCorrectPin(new int[]{1, 2, 3, 4});
+            findViewById(R.id.welcome).setVisibility(View.VISIBLE);
+            findViewById(R.id.pinEnter).setVisibility(View.GONE);
+            //mPinView.setCorrectPin(new int[]{1, 2, 3, 4});
         } else {
+            findViewById(R.id.welcome).setVisibility(View.GONE);
+            findViewById(R.id.pinEnter).setVisibility(View.VISIBLE);
             mPinView.setCorrectPin(new int[]{
                     Character.getNumericValue(pin.charAt(0)),
                     Character.getNumericValue(pin.charAt(1)),

@@ -5,11 +5,13 @@
     <string name="prompt_pin">Введите PIN-код</string>
     <string name="prompt_fingerprint">Или сосканируйте отпечаток пальца</string>
     <string name="action_sign_in">Войти</string>
-    <string name="action_sign_up">Восстановить PIN</string>
+    <string name="action_restore">Восстановить PIN</string>
+    <string name="action_sign_up">Зарегистрировать устройство</string>
     <string name="fingerprint_success">Отпечаток распознан</string>
     <string name="fingerprint_help">Отпечаток не считался</string>
     <string name="fingerprint_error">Не тот палец. Попробуйте авторизоваться через некоторое время или с помощью PIN кода</string>
     <string name="fingerprint_failed">Не удалось распознать отпечаток пальца</string>
+    <string name="app_description">"Двухфакторная аутентификация — это дополнительный уровень безопасности, который гарантирует, что доступ к вашей учетной записи сможете получить только вы, даже если пароль известен кому-либо еще.\n\nДля уведомления о втором факторе авторизации будет использовано PUSH сообщение. Потому рекомендуем разрешить PUSH для того устройства\n\nЧтоб начать использование приложения зарегистрируйте свое устройство."</string>
 
     <!-- Strings related to main -->
     <string name="action_check_push">Проверка сообщений</string>
@@ -37,6 +39,7 @@
     <string name="enter_pin">PIN код должен состоять из 4-х цифр.\nМы не сможем его восстановить. Не забывайте его!</string>
     <string name="enter_phone">Вводите телефон в международном формате.\nПример: +77476544849</string>
     <string name="enter_pin_small">PIN код</string>
+    <string name="restore_pin_small">Новый PIN код</string>
     <string name="error_empty_pin">PIN-код обязателен</string>
     <string name="error_empty_phone">Телефон обязателен</string>
     <string name="error_invalid_pin">PIN-кода должен состоять из 4-х цифр</string>
@@ -44,7 +47,7 @@
     <string name="action_send_code">Подтвердить телефон</string>
     <string name="action_register">Отправить подтверждение</string>
     <string name="enter_code">Введите код подтверждения, которьй пришел вам с помощью СМС</string>
-    <string name="resend_code">Не приходит код? Проверьте телефон и отправьте код снова.</string>
+    <string name="resend_code">Не приходит код? Проверьте корректность номера телефона и запросите СМС с кодом снова.</string>
     <string name="action_resend_code">Отправить код снова</string>
     <string name="enter_code_small">Код подтверждения</string>
 
