@@ -3,12 +3,17 @@ package com.bc2fa.a2fa;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +34,8 @@ import java.util.HashMap;
  */
 
 public class MainActivity extends AppCompatActivity {
+    @SuppressWarnings("unused")
+    private static final String TAG = "MainActivity";
 
     SharedPreferences mPrefs;
 
@@ -52,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadEventsAndServices();
+        loadEventsAndServicesCatalog();
 
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
@@ -100,20 +107,52 @@ public class MainActivity extends AppCompatActivity {
                 mVerifyTask.execute((Void) null);
             }
         });
+
+        // Load new requests
+        showFullProgress(true);
+        mRefreshTask = new RefreshTask();
+        mRefreshTask.execute((Void) null);
     }
 
-    private void loadEventsAndServices(){
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mVerifyButton.getVisibility() == View.GONE){ // Load received requests from server
+                showFullProgress(true);
+                mRefreshTask = new RefreshTask();
+                mRefreshTask.execute((Void) null);
+            } else { // Tell user to load request after answer on current
+                showModal(getString(R.string.action_new_request));
+            }
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
+                new IntentFilter(getString(R.string.default_notification_broadcast_name))
+        );
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+    }
+
+    private void loadEventsAndServicesCatalog(){
         Resources res = this.getResources();
-        String[] hashmapData = res.getStringArray(R.array.services_map);
+        String[] hashMapData = res.getStringArray(R.array.services_map);
         services = new HashMap<>();
-        for(int i=0; i<hashmapData.length; i=i+2) {
-            services.put(hashmapData[i], hashmapData[i+1]);
+        for(int i=0; i<hashMapData.length; i=i+2) {
+            services.put(hashMapData[i], hashMapData[i+1]);
         }
 
-        hashmapData = res.getStringArray(R.array.events_map);
+        hashMapData = res.getStringArray(R.array.events_map);
         events = new HashMap<>();
-        for(int i=0; i<hashmapData.length; i=i+2) {
-            events.put(hashmapData[i], hashmapData[i+1]);
+        for(int i=0; i<hashMapData.length; i=i+2) {
+            events.put(hashMapData[i], hashMapData[i+1]);
         }
     }
 
@@ -189,10 +228,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mRefreshTask = null;
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
             if (success) {
-                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
                 showFullProgress(false);
                 mQuestionDescription.setText(String.format(getString(R.string.request_description_format), getService("kazakhtelecom"), getEvent("login")));
                 mQuestionTitle.setText(String.format(getString(R.string.request_title_format), getService("kazakhtelecom")));
@@ -203,6 +241,13 @@ public class MainActivity extends AppCompatActivity {
                 // showModal(getString(R.string.no_new_request));
             } else {
                 showFullProgress(false);
+
+                // Display default main activity
+                mQuestionDescription.setText(getString(R.string.main_default_description));
+                mQuestionTitle.setText(getString(R.string.main_default_title));
+                setAnimatedHide(true, shortAnimTime, mRejectButton);
+                setAnimatedHide(true, shortAnimTime, mVerifyButton);
+
                 showModal(getString(R.string.error_request));
             }
         }
@@ -215,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Represents an asynchronous refresh PUSH messages task
+     * Represents an asynchronous verify request task
      */
     @SuppressLint("StaticFieldLeak")
     public class VerifyTask extends AsyncTask<Void, Void, Boolean> {
@@ -238,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
             } else {
-                // TODO: attempt refresh against a network service.
+                // TODO: attempt verify request a network service.
 
                 try {
                     // Simulate network access.

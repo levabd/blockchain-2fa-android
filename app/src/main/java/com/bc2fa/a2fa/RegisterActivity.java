@@ -4,11 +4,15 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +28,7 @@ import android.widget.Toast;
 
 import com.github.gfx.util.encrypt.EncryptedSharedPreferences;
 import com.github.gfx.util.encrypt.Encryption;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.Objects;
 
@@ -32,6 +37,8 @@ import java.util.Objects;
  */
 
 public class RegisterActivity extends AppCompatActivity {
+    @SuppressWarnings("unused")
+    private static final String TAG = "RegisterActivity";
 
     SharedPreferences mPrefs;
 
@@ -295,9 +302,34 @@ public class RegisterActivity extends AppCompatActivity {
         finish();
     }
 
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getExtras() != null) {
+                showModal(intent.getExtras().getString("message"));
+            }
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
+                new IntentFilter(getString(R.string.default_notification_broadcast_name))
+        );
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+    }
+
     /**
      * Represents an asynchronous send code task used to register the user.
      */
+    @SuppressLint("StaticFieldLeak")
     public class SendCodeTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mPhone;
@@ -344,6 +376,7 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * Represents an asynchronous register user task
      */
+    @SuppressLint("StaticFieldLeak")
     public class RegisterTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mPhone;
@@ -361,6 +394,9 @@ public class RegisterActivity extends AppCompatActivity {
             // TODO: attempt register against a network service.
 
             try {
+                // TODO: Implement this method to send token to your app server.
+                // Get PUSH token
+                String token = FirebaseInstanceId.getInstance().getToken();
                 // Simulate network access.
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -393,6 +429,7 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * Represents an asynchronous task to show resend button and description
      */
+    @SuppressLint("StaticFieldLeak")
     public class ShowResendTask extends AsyncTask<Void, Void, Boolean> {
 
         ShowResendTask() { }

@@ -17,7 +17,7 @@ class CryptoUtils {
                     118.toChar(), 89.toChar(), 109.toChar(), 80.toChar(), 71.toChar(), 122.toChar(),
                     57.toChar(), 114.toChar()))
 
-            val source = "ABCDEF0123456789"
+            val source = "abcdef0123456789"
             var rhex = ""
             for (i in 0..16) rhex += source[Math.floor(Math.random() * source.length).toInt()]
 
