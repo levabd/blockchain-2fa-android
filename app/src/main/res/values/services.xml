@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="services_map">
-        <item>kazakhtelecom</item>
+        <item>kaztel</item>
         <item>Казахтелеком</item>
         <item>test</item>
         <item>Defense.gov</item>
