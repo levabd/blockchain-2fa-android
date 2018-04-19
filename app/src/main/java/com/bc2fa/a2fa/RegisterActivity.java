@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -30,6 +31,11 @@ import com.github.gfx.util.encrypt.EncryptedSharedPreferences;
 import com.github.gfx.util.encrypt.Encryption;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -65,6 +71,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     private String pin;
     private String phone;
+    private String pushToken;
+
+    final boolean[] requestFailure = {false};
 
     @SuppressLint("Assert")
     @Override
@@ -140,6 +149,8 @@ public class RegisterActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     private void attemptStart() {
         String code = mCodeView.getText().toString();
+        phone = mPhoneView.getText().toString();
+
         if (mShowResendTask != null) {
             mShowResendTask.cancel(true);
         }
@@ -147,6 +158,7 @@ public class RegisterActivity extends AppCompatActivity {
             mSendCodeTask.cancel(true);
         }
         showFullProgress(true);
+
         mRegisterTask = new RegisterTask(phone, pin, code);
         mRegisterTask.execute((Void) null);
     }
@@ -278,7 +290,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void showModal(String message) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(RegisterActivity.this);
         // alert.setTitle("Modal");
         alert.setMessage(message);
 
@@ -295,6 +307,7 @@ public class RegisterActivity extends AppCompatActivity {
         mPrefs.edit()
                 .putString("phone", phone2Save)
                 .putString("pin", pin2Save)
+                .putString("pushToken", pushToken)
                 .apply();
         Toast toast = Toast.makeText(this, getString(R.string.register_success), Toast.LENGTH_LONG);
         toast.show();
@@ -342,28 +355,51 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt send code against a network service.
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+            // Simulate network access.
+            // Thread.sleep(2000);
+            mPhoneView.setError(null);
+            requestFailure[0] = false;
+            Long tsLong = System.currentTimeMillis()/1000;
+            String ts = tsLong.toString();
+            App.getApi().getVerifyNumber(mPhone, ts).enqueue(new Callback<DummyDTO>() {
+            //App.getApi().postVerifyNumber(new PostVerifyNumberDTO(mPhone, "", 1111)).enqueue(new Callback<DummyDTO>() {
+                @Override
+                public void onResponse(Call<DummyDTO> call, Response<DummyDTO> response) {
+                    if (!response.isSuccessful()) {
+                        //request not successful (like 400,401,403 etc)
+                        requestFailure[0] = true;
+                        String errorMsg;
+                        if (response.code() == 404) {
+                            mPhoneView.setError("Пользователь с таким номером не зарегистрирован в системе");
+                            errorMsg = "Пользователь с таким номером не зарегистрирован в системе";
+                        } else {
+                            errorMsg = "Не удалось совершить запрос. Проверьте параметры и попробуйте позже.";
+                        }
+                        showCodeProgress(false, false);
+                        showModal(errorMsg);
+                        //showModal(getString(R.string.error_internet_sms));
+                    } else {
+                        showCodeProgress(false, true);
+                    }
 
-            return true;
+                }
+
+                @Override
+                public void onFailure(Call<DummyDTO> call, Throwable t) {
+                    requestFailure[0] = true;
+                    showModal("Проблемы с сетевым соединением. Попробуйте чуть позже");
+                    showCodeProgress(false, true);
+                    // Toast.makeText(RegisterActivity.this, "Проблемы с сетевым соединением. Попробуйте чуть позже", Toast.LENGTH_LONG).show();
+                }
+            });
+
+            return !requestFailure[0];
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             mSendCodeTask = null;
-
-            if (success) {
-                showCodeProgress(false, true);
-            } else {
-                showCodeProgress(false, false);
-                showModal(getString(R.string.error_internet_sms));
-            }
         }
 
         @Override
@@ -391,32 +427,72 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt register against a network service.
+
+            // Simulate network access.
+            // Thread.sleep(2000);
+            pushToken = FirebaseInstanceId.getInstance().getToken();
+            requestFailure[0] = false;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mPhoneView.setError(null);
+                    mCodeView.setError(null);
+                }
+            });
+
+            Integer code;
 
             try {
-                // TODO: Implement this method to send token to your app server.
-                // Get PUSH token
-                String token = FirebaseInstanceId.getInstance().getToken();
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                code = Integer.parseInt(mCode);
+            } catch (NumberFormatException e) {
+                String errorMsg = "Код подтверждения не может быть пустым";
+                mCodeView.setError(errorMsg);
                 return false;
             }
 
-            return true;
+            Log.d("Blockchain", "Token: " + pushToken);
+
+            App.getApi().postVerifyNumber(new PostVerifyNumberDTO(mPhone, pushToken, code)).enqueue(new Callback<DummyDTO>() {
+                @Override
+                public void onResponse(Call<DummyDTO> call, Response<DummyDTO> response) {
+                    //showModal("Success: " + response.code()); Thread sleep ??
+                    if (!response.isSuccessful()) {
+                        //request not successful (like 400,401,403 etc)
+                        requestFailure[0] = true;
+                        String errorMsg;
+                        if (response.code() == 422) {
+                            errorMsg = "Код подтверждения устарел или неверен";
+                            mCodeView.setError(errorMsg);
+                        } else if (response.code() == 404) {
+                            errorMsg = "Пользователь с таким номером не зарегистрирован в системе";
+                            mPhoneView.setError(errorMsg);
+                        } else {
+                            errorMsg = "Не удалось совершить запрос. Проверьте параметры и попробуйте позже.";
+                        }
+                        showFullProgress(false);
+                        showModal(errorMsg);
+                    } else {
+                        showFullProgress(false);
+                        registerSuccess(mPhone, mPin);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DummyDTO> call, Throwable t) {
+                    //showModal("Failed: " + t.getMessage()); Thread sleep ??
+                    requestFailure[0] = true;
+                    showFullProgress(false);
+                    showModal("Проблемы с сетевым соединением. Попробуйте чуть позже");
+                }
+            });
+
+            return !requestFailure[0];
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             mRegisterTask = null;
-
-            if (success) {
-                showFullProgress(false);
-                registerSuccess(mPhone, mPin);
-            } else {
-                showFullProgress(false);
-                showModal(getString(R.string.error_internet_register));
-            }
+            showFullProgress(false);
         }
 
         @Override
